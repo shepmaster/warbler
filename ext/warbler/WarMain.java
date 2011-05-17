@@ -20,14 +20,12 @@ public class WarMain extends WarblerSupport {
     public static final String MAIN = "/" + WarMain.class.getName().replace('.', '/') + ".class";
     public static final String WINSTONE_JAR = "/WEB-INF/winstone.jar";
 
-    private String[] args;
     private String path, warfile;
     private boolean debug;
     private File webroot;
 
     public WarMain(String[] args) throws Exception {
-        super();
-        this.args = args;
+        super(args);
         URL mainClass = getClass().getResource(MAIN);
         this.path = mainClass.toURI().getSchemeSpecificPart();
         this.warfile = this.path.replace("!" + MAIN, "").replace("file:", "");

@@ -23,13 +23,11 @@ import java.util.jar.JarFile;
 public class JarMain extends WarblerSupport {
     public static final String MAIN = "/" + JarMain.class.getName().replace('.', '/') + ".class";
 
-    private String[] args;
     private String path, jarfile;
     private boolean debug;
 
     public JarMain(String[] args) throws Exception {
-        super();
-        this.args = args;
+        super(args);
         URL mainClass = getClass().getResource(MAIN);
         this.path = mainClass.toURI().getSchemeSpecificPart();
         this.jarfile = this.path.replace("!" + MAIN, "").replace("file:", "");

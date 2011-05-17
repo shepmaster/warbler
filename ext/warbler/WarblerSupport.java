@@ -11,8 +11,11 @@ import java.io.File;
 
 public class WarblerSupport implements Runnable {
     protected File extractRoot;
+    protected String[] args;
 
-    WarblerSupport() throws Exception {
+    WarblerSupport(String[] args) throws Exception
+    {
+        this.args = args;
         this.extractRoot = File.createTempFile("warbler", "extract");
         this.extractRoot.delete();
         this.extractRoot.mkdirs();
