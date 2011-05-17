@@ -16,7 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Arrays;
 
-public class WarMain extends WarblerSupport implements Runnable {
+public class WarMain extends WarblerSupport {
     public static final String MAIN = "/" + WarMain.class.getName().replace('.', '/') + ".class";
     public static final String WINSTONE_JAR = "/WEB-INF/winstone.jar";
 
@@ -24,17 +24,14 @@ public class WarMain extends WarblerSupport implements Runnable {
     private String path, warfile;
     private boolean debug;
     private File webroot;
-    private File extractRoot;
 
     public WarMain(String[] args) throws Exception {
+        super();
         this.args = args;
         URL mainClass = getClass().getResource(MAIN);
         this.path = mainClass.toURI().getSchemeSpecificPart();
         this.warfile = this.path.replace("!" + MAIN, "").replace("file:", "");
         this.debug = isDebug();
-        this.extractRoot = File.createTempFile("warbler", "extract");
-        this.extractRoot.delete();
-        this.extractRoot.mkdirs();
         this.webroot = new File(this.extractRoot, "webroot");
         Runtime.getRuntime().addShutdownHook(new Thread(this));
     }
@@ -74,10 +71,6 @@ public class WarMain extends WarblerSupport implements Runnable {
     private void start() throws Exception {
         URL u = extractWinstone();
         launchWinstone(u);
-    }
-
-    public void run() {
-        delete(webroot.getParentFile());
     }
 
     public static void main(String[] args) {

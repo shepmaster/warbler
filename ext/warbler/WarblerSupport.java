@@ -9,7 +9,15 @@ package warbler;
 
 import java.io.File;
 
-public class WarblerSupport {
+public class WarblerSupport implements Runnable {
+    protected File extractRoot;
+
+    WarblerSupport() throws Exception {
+        this.extractRoot = File.createTempFile("warbler", "extract");
+        this.extractRoot.delete();
+        this.extractRoot.mkdirs();
+    }
+
     protected void delete(File f) {
         if (f.isDirectory()) {
             File[] children = f.listFiles();
@@ -28,5 +36,9 @@ public class WarblerSupport {
 
     protected static boolean isDebug() {
         return System.getProperty("warbler.debug") != null;
+    }
+
+    public void run() {
+        delete(extractRoot);
     }
 }
