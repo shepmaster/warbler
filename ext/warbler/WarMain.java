@@ -20,12 +20,10 @@ public class WarMain extends WarblerSupport {
     public static final String MAIN = "/" + WarMain.class.getName().replace('.', '/') + ".class";
     public static final String WINSTONE_JAR = "/WEB-INF/winstone.jar";
 
-    private String warfile;
     private File webroot;
 
     public WarMain(String[] args) throws Exception {
         super(args);
-        this.warfile = this.path.replace("!" + MAIN, "").replace("file:", "");
         this.webroot = new File(this.extractRoot, "webroot");
         Runtime.getRuntime().addShutdownHook(new Thread(this));
     }
@@ -54,7 +52,7 @@ public class WarMain extends WarblerSupport {
         Class klass = Class.forName("winstone.Launcher", true, loader);
         Method main = klass.getDeclaredMethod("main", new Class[] {String[].class});
         String[] newargs = new String[args.length + 3];
-        newargs[0] = "--warfile=" + warfile;
+        newargs[0] = "--warfile=" + archive_file;
         newargs[1] = "--webroot=" + webroot;
         newargs[2] = "--directoryListings=false";
         System.arraycopy(args, 0, newargs, 3, args.length);

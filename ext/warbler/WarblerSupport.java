@@ -16,6 +16,7 @@ public class WarblerSupport implements Runnable {
     private String main;
     protected String path;
     protected boolean debug;
+    protected String archive_file;
 
     WarblerSupport(String[] args) throws Exception
     {
@@ -28,6 +29,7 @@ public class WarblerSupport implements Runnable {
         URL mainClass = klass.getResource(this.main);
         this.path = mainClass.toURI().getSchemeSpecificPart();
         this.debug = isDebug();
+        this.archive_file = this.path.replace("!" + this.main, "").replace("file:", "");
     }
 
     protected void delete(File f) {

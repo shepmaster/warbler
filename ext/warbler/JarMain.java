@@ -23,16 +23,13 @@ import java.util.jar.JarFile;
 public class JarMain extends WarblerSupport {
     public static final String MAIN = "/" + JarMain.class.getName().replace('.', '/') + ".class";
 
-    private String jarfile;
-
     public JarMain(String[] args) throws Exception {
         super(args);
-        this.jarfile = this.path.replace("!" + MAIN, "").replace("file:", "");
         Runtime.getRuntime().addShutdownHook(new Thread(this));
     }
 
     private URL[] extractJRuby() throws Exception {
-        JarFile jf = new JarFile(this.jarfile);
+        JarFile jf = new JarFile(this.archive_file);
         List<String> jarNames = new ArrayList<String>();
         for (Enumeration<JarEntry> eje = jf.entries(); eje.hasMoreElements(); ) {
             String name = eje.nextElement().getName();
@@ -79,7 +76,7 @@ public class JarMain extends WarblerSupport {
         argv.invoke(scriptingContainer, new Object[] {args});
         Method setClassLoader = scriptingContainerClass.getDeclaredMethod("setClassLoader", new Class[] {ClassLoader.class});
         setClassLoader.invoke(scriptingContainer, new Object[] {loader});
-        debug("invoking " + jarfile + " with: " + Arrays.deepToString(args));
+        debug("invoking " + archive_file + " with: " + Arrays.deepToString(args));
 
         Method runScriptlet = scriptingContainerClass.getDeclaredMethod("runScriptlet", new Class[] {String.class});
         return ((Number) runScriptlet.invoke(scriptingContainer, new Object[] {
