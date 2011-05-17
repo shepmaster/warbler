@@ -24,6 +24,7 @@ public class WarMain extends WarblerSupport implements Runnable {
     private String path, warfile;
     private boolean debug;
     private File webroot;
+    private File extractRoot;
 
     public WarMain(String[] args) throws Exception {
         this.args = args;
@@ -31,10 +32,10 @@ public class WarMain extends WarblerSupport implements Runnable {
         this.path = mainClass.toURI().getSchemeSpecificPart();
         this.warfile = this.path.replace("!" + MAIN, "").replace("file:", "");
         this.debug = isDebug();
-        this.webroot = File.createTempFile("winstone", "webroot");
-        this.webroot.delete();
-        this.webroot.mkdirs();
-        this.webroot = new File(this.webroot, new File(warfile).getName());
+        this.extractRoot = File.createTempFile("warbler", "extract");
+        this.extractRoot.delete();
+        this.extractRoot.mkdirs();
+        this.webroot = new File(this.extractRoot, "webroot");
         Runtime.getRuntime().addShutdownHook(new Thread(this));
     }
 

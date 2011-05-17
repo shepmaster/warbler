@@ -34,7 +34,7 @@ public class JarMain extends WarblerSupport implements Runnable {
         this.path = mainClass.toURI().getSchemeSpecificPart();
         this.jarfile = this.path.replace("!" + MAIN, "").replace("file:", "");
         this.debug = isDebug();
-        this.extractRoot = File.createTempFile("jruby", "extract");
+        this.extractRoot = File.createTempFile("warbler", "extract");
         this.extractRoot.delete();
         this.extractRoot.mkdirs();
         Runtime.getRuntime().addShutdownHook(new Thread(this));
