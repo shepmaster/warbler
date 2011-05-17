@@ -21,13 +21,11 @@ public class WarMain extends WarblerSupport {
     public static final String WINSTONE_JAR = "/WEB-INF/winstone.jar";
 
     private String warfile;
-    private boolean debug;
     private File webroot;
 
     public WarMain(String[] args) throws Exception {
         super(args);
         this.warfile = this.path.replace("!" + MAIN, "").replace("file:", "");
-        this.debug = isDebug();
         this.webroot = new File(this.extractRoot, "webroot");
         Runtime.getRuntime().addShutdownHook(new Thread(this));
     }

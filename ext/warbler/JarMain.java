@@ -24,12 +24,10 @@ public class JarMain extends WarblerSupport {
     public static final String MAIN = "/" + JarMain.class.getName().replace('.', '/') + ".class";
 
     private String jarfile;
-    private boolean debug;
 
     public JarMain(String[] args) throws Exception {
         super(args);
         this.jarfile = this.path.replace("!" + MAIN, "").replace("file:", "");
-        this.debug = isDebug();
         Runtime.getRuntime().addShutdownHook(new Thread(this));
     }
 
