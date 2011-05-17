@@ -8,8 +8,6 @@
 package warbler;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -42,26 +40,6 @@ public class JarMain extends WarblerSupport {
         }
 
         return (URL[]) urls.toArray(new URL[urls.size()]);
-    }
-
-    private URL extractJar(String jarpath) throws Exception {
-        InputStream jarStream = new URL("jar:" + path.replace(this.main, jarpath)).openStream();
-        String jarname = jarpath.substring(jarpath.lastIndexOf("/") + 1, jarpath.lastIndexOf("."));
-        File jarFile = new File(extractRoot, jarname + ".jar");
-        jarFile.deleteOnExit();
-        FileOutputStream outStream = new FileOutputStream(jarFile);
-        try {
-            byte[] buf = new byte[65536];
-            int bytesRead = 0;
-            while ((bytesRead = jarStream.read(buf)) != -1) {
-                outStream.write(buf, 0, bytesRead);
-            }
-        } finally {
-            jarStream.close();
-            outStream.close();
-        }
-        debug(jarname + ".jar extracted to " + jarFile.getPath());
-        return jarFile.toURI().toURL();
     }
 
     private int launchJRuby(URL[] jars) throws Exception {

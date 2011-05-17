@@ -11,9 +11,7 @@ import java.net.URLClassLoader;
 import java.net.URL;
 import java.lang.reflect.Method;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.Arrays;
 
 public class WarMain extends WarblerSupport {
@@ -28,22 +26,7 @@ public class WarMain extends WarblerSupport {
     }
 
     private URL extractWinstone() throws Exception {
-        InputStream jarStream = new URL("jar:" + path.replace(this.main, WINSTONE_JAR)).openStream();
-        File jarFile = File.createTempFile("winstone", ".jar");
-        jarFile.deleteOnExit();
-        FileOutputStream outStream = new FileOutputStream(jarFile);
-        try {
-            byte[] buf = new byte[4096];
-            int bytesRead = 0;
-            while ((bytesRead = jarStream.read(buf)) != -1) {
-                outStream.write(buf, 0, bytesRead);
-            }
-        } finally {
-            jarStream.close();
-            outStream.close();
-        }
-        debug("winstone.jar extracted to " + jarFile.getPath());
-        return jarFile.toURI().toURL();
+        return extractJar(WINSTONE_JAR);
     }
 
     private void launchWinstone(URL jar) throws Exception {
