@@ -8,10 +8,13 @@
 package warbler;
 
 import java.io.File;
+import java.net.URL;
 
 public class WarblerSupport implements Runnable {
     protected File extractRoot;
     protected String[] args;
+    private String main;
+    protected String path;
 
     WarblerSupport(String[] args) throws Exception
     {
@@ -19,6 +22,10 @@ public class WarblerSupport implements Runnable {
         this.extractRoot = File.createTempFile("warbler", "extract");
         this.extractRoot.delete();
         this.extractRoot.mkdirs();
+        Class klass = getClass();
+        this.main = "/" + klass.getName().replace('.', '/') + ".class";
+        URL mainClass = klass.getResource(this.main);
+        this.path = mainClass.toURI().getSchemeSpecificPart();
     }
 
     protected void delete(File f) {
