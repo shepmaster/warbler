@@ -41,7 +41,7 @@ describe Warbler::Jar do
 
     it "adds a JarMain class" do
       jar.apply(config)
-      file_list(%r{^JarMain\.class$}).should_not be_empty
+      file_list(%r{^warbler.JarMain\.class$}).should_not be_empty
     end
 
     it "adds an init.rb" do
@@ -437,7 +437,7 @@ describe Warbler::Jar do
           config.features << "executable"
         end
         jar.apply(config)
-        file_list(%r{^WarMain\.class$}).should_not be_empty
+        file_list(%r{^warbler.WarMain\.class$}).should_not be_empty
       end
     end
 

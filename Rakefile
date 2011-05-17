@@ -84,7 +84,7 @@ begin
   end
 
   task :jar => :compile do
-    ant.jar :basedir => "pkg/classes", :destfile => "lib/warbler_jar.jar", :includes => "*.class"
+    ant.jar :basedir => "pkg/classes", :destfile => "lib/warbler_jar.jar"
   end
 rescue LoadError
   task :jar do

@@ -33,8 +33,9 @@ module Warbler
       end
 
       def update_archive(jar)
-        jar.files['META-INF/MANIFEST.MF'] = StringIO.new(Warbler::Jar::DEFAULT_MANIFEST.chomp + "Main-Class: JarMain\n") unless config.manifest_file
-        jar.files['JarMain.class'] = jar.entry_in_jar("#{WARBLER_HOME}/lib/warbler_jar.jar", "JarMain.class")
+        jar.files['META-INF/MANIFEST.MF'] = StringIO.new(Warbler::Jar::DEFAULT_MANIFEST.chomp + "Main-Class: warbler.JarMain\n") unless config.manifest_file
+        jar.files['warbler']
+        jar.files['warbler/JarMain.class'] = jar.entry_in_jar("#{WARBLER_HOME}/lib/warbler_jar.jar", "warbler/JarMain.class")
       end
 
       def default_pathmaps

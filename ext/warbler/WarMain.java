@@ -5,6 +5,8 @@
  * See the file LICENSE.txt for details.
  */
 
+package warbler;
+
 import java.net.URLClassLoader;
 import java.net.URL;
 import java.lang.reflect.Method;
