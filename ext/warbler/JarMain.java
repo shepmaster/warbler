@@ -21,8 +21,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class JarMain extends WarblerSupport {
-    public static final String MAIN = "/" + JarMain.class.getName().replace('.', '/') + ".class";
-
     public JarMain(String[] args) throws Exception {
         super(args);
         Runtime.getRuntime().addShutdownHook(new Thread(this));
@@ -47,7 +45,7 @@ public class JarMain extends WarblerSupport {
     }
 
     private URL extractJar(String jarpath) throws Exception {
-        InputStream jarStream = new URL("jar:" + path.replace(MAIN, jarpath)).openStream();
+        InputStream jarStream = new URL("jar:" + path.replace(this.main, jarpath)).openStream();
         String jarname = jarpath.substring(jarpath.lastIndexOf("/") + 1, jarpath.lastIndexOf("."));
         File jarFile = new File(extractRoot, jarname + ".jar");
         jarFile.deleteOnExit();

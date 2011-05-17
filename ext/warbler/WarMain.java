@@ -17,7 +17,6 @@ import java.io.FileOutputStream;
 import java.util.Arrays;
 
 public class WarMain extends WarblerSupport {
-    public static final String MAIN = "/" + WarMain.class.getName().replace('.', '/') + ".class";
     public static final String WINSTONE_JAR = "/WEB-INF/winstone.jar";
 
     private File webroot;
@@ -29,7 +28,7 @@ public class WarMain extends WarblerSupport {
     }
 
     private URL extractWinstone() throws Exception {
-        InputStream jarStream = new URL("jar:" + path.replace(MAIN, WINSTONE_JAR)).openStream();
+        InputStream jarStream = new URL("jar:" + path.replace(this.main, WINSTONE_JAR)).openStream();
         File jarFile = File.createTempFile("winstone", ".jar");
         jarFile.deleteOnExit();
         FileOutputStream outStream = new FileOutputStream(jarFile);

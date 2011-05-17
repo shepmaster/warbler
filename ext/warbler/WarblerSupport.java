@@ -13,7 +13,7 @@ import java.net.URL;
 public class WarblerSupport implements Runnable {
     protected File extractRoot;
     protected String[] args;
-    private String main;
+    protected String main;
     protected String path;
     protected boolean debug;
     protected String archive_file;
