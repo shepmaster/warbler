@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-public class JarMain implements Runnable {
+public class JarMain extends WarblerSupport implements Runnable {
     public static final String MAIN = "/" + JarMain.class.getName().replace('.', '/') + ".class";
 
     private String[] args;
@@ -107,22 +107,6 @@ public class JarMain implements Runnable {
         return launchJRuby(u);
     }
 
-    private void debug(String msg) {
-        if (debug) {
-            System.out.println(msg);
-        }
-    }
-
-    private void delete(File f) {
-        if (f.isDirectory()) {
-            File[] children = f.listFiles();
-            for (int i = 0; i < children.length; i++) {
-                delete(children[i]);
-            }
-        }
-        f.delete();
-    }
-
     public void run() {
         delete(extractRoot);
     }
@@ -142,9 +126,5 @@ public class JarMain implements Runnable {
             }
             System.exit(1);
         }
-    }
-
-    private static boolean isDebug() {
-        return System.getProperty("warbler.debug") != null;
     }
 }

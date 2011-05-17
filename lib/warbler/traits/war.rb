@@ -120,6 +120,7 @@ module Warbler
         jar.files['META-INF/MANIFEST.MF'] = StringIO.new(Warbler::Jar::DEFAULT_MANIFEST.chomp + "Main-Class: warbler.WarMain\n")
         jar.files['warbler'] = nil
         jar.files['warbler/WarMain.class'] = jar.entry_in_jar("#{WARBLER_HOME}/lib/warbler_jar.jar", 'warbler/WarMain.class')
+        jar.files['warbler/WarblerSupport.class'] = jar.entry_in_jar("#{WARBLER_HOME}/lib/warbler_jar.jar", "warbler/WarblerSupport.class")
         jar.files['WEB-INF/winstone.jar'] = winstone_jar
       end
 

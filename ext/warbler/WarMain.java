@@ -16,7 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Arrays;
 
-public class WarMain implements Runnable {
+public class WarMain extends WarblerSupport implements Runnable {
     public static final String MAIN = "/" + WarMain.class.getName().replace('.', '/') + ".class";
     public static final String WINSTONE_JAR = "/WEB-INF/winstone.jar";
 
@@ -75,22 +75,6 @@ public class WarMain implements Runnable {
         launchWinstone(u);
     }
 
-    private void debug(String msg) {
-        if (debug) {
-            System.out.println(msg);
-        }
-    }
-
-    private void delete(File f) {
-        if (f.isDirectory()) {
-            File[] children = f.listFiles();
-            for (int i = 0; i < children.length; i++) {
-                delete(children[i]);
-            }
-        }
-        f.delete();
-    }
-
     public void run() {
         delete(webroot.getParentFile());
     }
@@ -105,10 +89,6 @@ public class WarMain implements Runnable {
             }
             System.exit(1);
         }
-    }
-
-    private static boolean isDebug() {
-        return System.getProperty("warbler.debug") != null;
     }
 }
 

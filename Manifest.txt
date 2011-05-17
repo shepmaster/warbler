@@ -10,6 +10,7 @@ ext/WarblerJarService.java
 ext/warbler
 ext/warbler/JarMain.java
 ext/warbler/WarMain.java
+ext/warbler/WarblerSupport.java
 lib/warbler
 lib/warbler.rb
 lib/warbler/application.rb
