@@ -14,6 +14,12 @@ import java.io.IOException;
 import java.io.File;
 import java.util.Arrays;
 
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+
 public class WarMain extends WarblerSupport {
     public static final String WINSTONE_JAR = "/WEB-INF/winstone.jar";
 
@@ -47,9 +53,64 @@ public class WarMain extends WarblerSupport {
         launchWinstone(u);
     }
 
+    private URL[] extractJRuby() throws Exception {
+        JarFile jf = new JarFile(this.archive_file);
+        List<String> jarNames = new ArrayList<String>();
+        for (Enumeration<JarEntry> eje = jf.entries(); eje.hasMoreElements(); ) {
+            String name = eje.nextElement().getName();
+            // change
+            if (name.startsWith("WEB-INF/lib") && name.endsWith(".jar")) {
+                jarNames.add("/" + name);
+            }
+        }
+
+        List<URL> urls = new ArrayList<URL>();
+        for (String name : jarNames) {
+            urls.add(extractJar(name));
+        }
+
+        return (URL[]) urls.toArray(new URL[urls.size()]);
+    }
+
+    private int launchJRuby(URL[] jars, String binary_path) throws Exception {
+        System.setProperty("org.jruby.embed.class.path", "");
+        URLClassLoader loader = new URLClassLoader(jars);
+        Class scriptingContainerClass = Class.forName("org.jruby.embed.ScriptingContainer", true, loader);
+        Object scriptingContainer = scriptingContainerClass.newInstance();
+
+        Method argv = scriptingContainerClass.getDeclaredMethod("setArgv", new Class[] {String[].class});
+        argv.invoke(scriptingContainer, new Object[] {args});
+        Method setClassLoader = scriptingContainerClass.getDeclaredMethod("setClassLoader", new Class[] {ClassLoader.class});
+        setClassLoader.invoke(scriptingContainer, new Object[] {loader});
+        debug("invoking " + archive_file + " with: " + Arrays.deepToString(args));
+
+        Method runScriptlet = scriptingContainerClass.getDeclaredMethod("runScriptlet", new Class[] {String.class});
+        return ((Number) runScriptlet.invoke(scriptingContainer, new Object[] {
+                    "begin\n" +
+                    "puts $LOAD_PATH.join(':')\n" +
+                    "require 'META-INF/init.rb'\n" +
+                    //                    "require '" + binary_path + "'\n" + // change
+                    "require 'META-INF/main.rb'\n" +
+                    "0\n" +
+                    "rescue SystemExit => e\n" +
+                    "e.status\n" +
+                    "end"
+                })).intValue();
+    }
+
+    private int startBinary(String binary) throws Exception {
+        debug("starting the binary '" + binary + "'");
+        URL[] u = extractJRuby();
+        return launchJRuby(u, binary);
+    }
+
     public static void main(String[] args) {
         try {
-            new WarMain(args).start();
+            if (args.length == 0) {
+                new WarMain(args).start();
+            } else {
+                new WarMain(args).startBinary(args[0]);
+            }
         } catch (Exception e) {
             System.err.println("error: " + e.toString());
             if (isDebug()) {
