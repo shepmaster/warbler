@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class WarMain extends WarblerSupport {
     public static final String WINSTONE_JAR = "/WEB-INF/winstone.jar";
 
@@ -48,7 +51,7 @@ public class WarMain extends WarblerSupport {
         main.invoke(null, new Object[] {newargs});
     }
 
-    private void start() throws Exception {
+    private void startWinstone() throws Exception {
         URL u = extractWinstone();
         launchWinstone(u);
     }
@@ -72,7 +75,7 @@ public class WarMain extends WarblerSupport {
         return (URL[]) urls.toArray(new URL[urls.size()]);
     }
 
-    private int launchJRuby(URL[] jars, String binary_path) throws Exception {
+    private int launchJRuby(URL[] jars) throws Exception {
         System.setProperty("org.jruby.embed.class.path", "");
         URLClassLoader loader = new URLClassLoader(jars);
         Class scriptingContainerClass = Class.forName("org.jruby.embed.ScriptingContainer", true, loader);
@@ -87,9 +90,7 @@ public class WarMain extends WarblerSupport {
         Method runScriptlet = scriptingContainerClass.getDeclaredMethod("runScriptlet", new Class[] {String.class});
         return ((Number) runScriptlet.invoke(scriptingContainer, new Object[] {
                     "begin\n" +
-                    "puts $LOAD_PATH.join(':')\n" +
                     "require 'META-INF/init.rb'\n" +
-                    //                    "require '" + binary_path + "'\n" + // change
                     "require 'META-INF/main.rb'\n" +
                     "0\n" +
                     "rescue SystemExit => e\n" +
@@ -98,19 +99,55 @@ public class WarMain extends WarblerSupport {
                 })).intValue();
     }
 
-    private int startBinary(String binary) throws Exception {
-        debug("starting the binary '" + binary + "'");
+    private int startBinary() throws Exception {
         URL[] u = extractJRuby();
-        return launchJRuby(u, binary);
+        return launchJRuby(u);
+    }
+
+    private Map<String, String> findExecutables() throws Exception {
+        HashMap<String, String> paths = new HashMap<String, String>();
+        JarFile jf = new JarFile(this.archive_file);
+
+        for (Enumeration<JarEntry> eje = jf.entries(); eje.hasMoreElements(); ) {
+            String name = eje.nextElement().getName();
+            String[] parts = name.split("/");
+
+            if (parts.length < 2) continue;
+            if (parts[parts.length-2].equals("bin")) {
+                debug("Adding binary " + parts[parts.length-1] + " (" + name + ")");
+                paths.put(parts[parts.length-1], name);
+            }
+        }
+
+        return paths;
+    }
+
+    private void start() throws Exception {
+        if (args.length == 0) {
+            startWinstone();
+        } else {
+            if (args[0].equals("server")) {
+                String[] remaining_args = new String[args.length-1];
+                System.arraycopy(args, 1, remaining_args, 0, args.length-1);
+                this.args = remaining_args;
+
+                startWinstone();
+            } else {
+                Map<String, String> paths = findExecutables();
+
+                if (paths.containsKey(args[0])) {
+                    args[0] = paths.get(args[0]);
+                    startBinary();
+                } else {
+                    startWinstone();
+                }
+            }
+        }
     }
 
     public static void main(String[] args) {
         try {
-            if (args.length == 0) {
-                new WarMain(args).start();
-            } else {
-                new WarMain(args).startBinary(args[0]);
-            }
+            new WarMain(args).start();
         } catch (Exception e) {
             System.err.println("error: " + e.toString());
             if (isDebug()) {

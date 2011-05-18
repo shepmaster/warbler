@@ -121,7 +121,7 @@ module Warbler
         jar.files['warbler'] = nil
         jar.files['warbler/WarMain.class'] = jar.entry_in_jar("#{WARBLER_HOME}/lib/warbler_jar.jar", 'warbler/WarMain.class')
         jar.files['warbler/WarblerSupport.class'] = jar.entry_in_jar("#{WARBLER_HOME}/lib/warbler_jar.jar", "warbler/WarblerSupport.class")
-        jar.files['META-INF/main.rb'] = StringIO.new("load 'WEB-INF/gems/gems/rake-0.8.7/bin/rake'")
+        jar.files['META-INF/main.rb'] = StringIO.new("load ARGV.shift")
         jar.files['WEB-INF/winstone.jar'] = winstone_jar
       end
 
