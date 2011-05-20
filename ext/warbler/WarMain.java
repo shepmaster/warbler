@@ -90,11 +90,12 @@ public class WarMain extends WarblerSupport {
         Method runScriptlet = scriptingContainerClass.getDeclaredMethod("runScriptlet", new Class[] {String.class});
         return ((Number) runScriptlet.invoke(scriptingContainer, new Object[] {
                     "begin\n" +
-                    "require 'META-INF/init.rb'\n" +
-                    "require 'META-INF/main.rb'\n" +
-                    "0\n" +
+                    "  require 'META-INF/init.rb'\n" +
+                    "  require 'rubygems'\n" +
+                    "  require 'META-INF/main.rb'\n" +
+                    "  0\n" +
                     "rescue SystemExit => e\n" +
-                    "e.status\n" +
+                    "  e.status\n" +
                     "end"
                 })).intValue();
     }
