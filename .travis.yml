@@ -1,20 +1,22 @@
-rvm:
-  - jruby
-  - jruby-head
 branches:
   only:
     - master
-env:
-  - JRUBY_OPTS="--1.8 --server -Xcext.enabled=false -Xcompile.invokedynamic=false"
-  - JRUBY_OPTS="--1.9 --server -Xcext.enabled=false -Xcompile.invokedynamic=false"
 matrix:
   include:
+    - rvm: jruby
+      env: JRUBY_OPTS="--1.8 --server -Xcext.enabled=false -Xcompile.invokedynamic=false"
+      gemfile: Gemfile1.8
+    - rvm: jruby
+      env: JRUBY_OPTS="--1.9 --server -Xcext.enabled=false -Xcompile.invokedynamic=false"
+    - rvm: jruby-head
+      env: JRUBY_OPTS="--1.8 --server -Xcext.enabled=false -Xcompile.invokedynamic=false"
+      gemfile: Gemfile1.8
+    - rvm: jruby-head
+      env: JRUBY_OPTS="--1.9 --server -Xcext.enabled=false -Xcompile.invokedynamic=false"
     - rvm: 1.8.7
-      env: ''
+      gemfile: Gemfile1.8
     - rvm: 1.9.2
-      env: ''
     - rvm: 1.9.3
-      env: ''
 notifications:
   irc:
     channels:
